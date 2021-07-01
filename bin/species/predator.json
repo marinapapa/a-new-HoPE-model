@@ -15,10 +15,73 @@
       "bodyMass": 0.8,
       "bodyMassSd": 0,
       "wingSpan": 0.75,
+      "wingAspectRatio": 3.5,
       "wingArea": 0.28
     },
 
     "states": [
+      {
+        "name": "transient",
+        "tr": 0.05,
+        "description": "set - retreat",
+
+        "aeroState": {
+          "cruiseSpeed": 12,
+          "w": 1
+        },
+        "actions": [
+          {
+            "name": "set_retreat",
+            "distAway": 400,
+            "speed": 10
+          }
+        ]
+      },
+      {
+        "name": "persistent",
+        "tr": 0.05,
+        "duration": 15,
+        "description": "shadowing",
+        "aeroState": {
+          "cruiseSpeed": 18,
+          "w": 5
+        },
+        "actions": [
+          {
+            "name": "select_flock",
+            "selection": "biggest"
+          },
+          {
+            "name": "shadowing",
+            "bearing": 179,
+            "distance": 30,
+            "placement": 1,
+            "prey_speed_scale": 1,
+            "w": 5
+          }
+        ]
+      },
+      {
+        "name": "persistent",
+        "tr": 0.05,
+        "duration": 20,
+        "description": "chase closest prey",
+        "aeroState": {
+          "cruiseSpeed": 18,
+          "w": 5
+        },
+        "actions": [
+          {
+            "name": "wiggle",
+            "w": 1
+          },
+          {
+            "name": "chase_closest_prey",
+            "prey_speed_scale": 1.5,
+            "w": 5
+          }
+        ]
+      },
       {
         "name": "persistent",
         "tr": 0.05,
@@ -40,69 +103,8 @@
           },
           {
             "name": "hold_current",
+            "pos": [ 100, -100 ],
             "w": 25
-          }
-        ]
-      },
-      {
-        "name": "persistent",
-        "duration": 20,
-        "tr": 0.05,
-        "description": "shadowing",
-        "aeroState": {
-          "cruiseSpeed": 18,
-          "w": 5
-        },
-        "actions": [
-          {
-            "name": "select_flock",
-            "selection": "biggest"
-          },
-          {
-            "bearing": 150,
-            "distance": 40,
-            "name": "shadowing",
-            "placement": 1,
-            "prey_speed_scale": 1,
-            "w": 5
-          }
-        ]
-      },
-      {
-        "name": "persistent",
-        "tr": 0.05,
-        "duration": 15,
-        "description": "chase closest prey",
-        "aeroState": {
-          "cruiseSpeed": 18,
-          "w": 5
-        },
-        "actions": [
-          {
-            "name": "wiggle",
-            "w": 0.5
-          },
-          {
-            "name": "chase_closest_prey",
-            "prey_speed_scale": 1.5,
-            "w": 5
-          }
-        ]
-      },
-      {
-        "name": "transient",
-        "tr": 0.05,
-        "description": "set - retreat",
-
-        "aeroState": {
-          "cruiseSpeed": 12,
-          "w": 1
-        },
-        "actions": [
-          {
-            "name": "set_retreat",
-            "distAway": 300,
-            "speed": 10
           }
         ]
       }
@@ -111,10 +113,10 @@
       "name": "piecewise_linear_interpolator",
       "TM": [
         [
-          [ 0, 1, 0, 0 ],
-          [ 0, 0, 1, 0 ],
           [ 0, 0, 0, 1 ],
-          [ 1, 0, 0, 0 ]
+          [ 0, 0, 1, 0 ],
+          [ 1, 0, 0, 0 ],
+          [ 0, 1, 0, 0 ]
         ]
       ],
       "edges": [ 0 ]

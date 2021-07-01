@@ -8,6 +8,8 @@ namespace model {
     thread_local rndutils::mutable_discrete_distribution<int, rndutils::all_zero_policy_uni> pigeon_discrete_dist;
   }
   
+  decltype(Pigeon::transitions_) Pigeon::transitions_;
+
   template <typename Init>
   void do_init_pop(std::vector<snapshot_entry<pigeon_tag>>& vse, Init&& init)
   {
@@ -35,10 +37,24 @@ namespace model {
     accel(0) // [m / s^2]
   {
    
-    pa_ = AP::create(idx, J["states"]); 
+    if (idx == 0) {
+      transitions_ = decltype(transitions_)(J);
+    }
+
+    pa_ = AP::create(idx, J["states"]);
+    float stress_mean = J["stress"]["ind_var_mean"];
+    float stress_sd = J["stress"]["ind_var_sd"];
+    if (stress_sd)
+    {
+      auto str_pdist = std::normal_distribution<float>(stress_mean, stress_sd);
+      stress = stress_ofs_ = str_pdist(model::reng);
+    }
+    else { stress = stress_ofs_ = 0.f; }
+    sp_ = stress_accum::create(idx, J["stress"]["sources"]);
+
     ai = flight::create_aero_info<float>(J["aero"]);
     sa.w = 0.f; // until they get value from state (first integrates before update)
-    speed = sa.cruiseSpeed = ai.cruiseSpeed; 
+    speed = sa.cruiseSpeed = ai.cruiseSpeed;
 
   }
 
@@ -73,8 +89,10 @@ namespace model {
   {
     pos = se.pos;
     speed = se.speed;
-	dir = se.dir; 
-	accel = se.accel;
+	  dir = se.dir; 
+	  accel = se.accel;
+    stress = se.stress;
+
   }
 
   size_t Pigeon::update(size_t idx, tick_t T, const Simulation& sim)
@@ -93,5 +111,13 @@ namespace model {
 
   void Pigeon::on_state_exit(size_t idx, tick_t T, const Simulation& sim)
   {
+    // select new state & enter
+    stress = stress_ofs_;
+    stress_accum::apply(sp_, this, idx, T, sim);
+    const auto TM = transitions_(stress);
+    tm = TM[current_state_];
+    pigeon_discrete_dist.mutate(TM[current_state_].cbegin(), TM[current_state_].cend());
+    current_state_ = pigeon_discrete_dist(reng);
+    pa_[current_state_]->enter(this, idx, T, sim);
   }
 }

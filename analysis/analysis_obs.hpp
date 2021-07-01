@@ -300,6 +300,50 @@ namespace analysis
 
 
 	template <typename Tag>
+	class TransMatrixObs : public model::AnalysisObserver
+	{
+	public:
+		TransMatrixObs(const std::filesystem::path& out_path, const json& J, const size_t& states_size)
+			: AnalysisObserver(out_path, J)
+		{
+			std::string header = "time,id,stress,state";
+			for (auto i = 0; i < states_size; ++i)
+			{
+				header += ",Pto" + std::to_string(i);
+			}
+			analysis::open_csv(outfile_stream_, full_out_path_, header);
+		}
+		~TransMatrixObs() override {}
+
+		void notify_collect(const model::Simulation& sim) override
+		{
+			const auto tt = static_cast<float>(sim.tick())* model::Simulation::dt();
+
+			sim.visit_all<Tag>([&](auto& p, size_t idx, bool alive) {
+				// csv writing backwards, so vectors backwards from header, new element to be added in front
+				if (alive)
+				{
+					data_out_.push_back(std::vector<float>());
+					if (p.tm.size())
+					{
+						std::reverse_copy(p.tm.begin(), p.tm.end(), std::back_inserter(data_out_.back()));
+					}
+					data_out_.back().insert(data_out_.back().end(), { static_cast<float>(p.get_current_state()), p.stress, static_cast<float>(idx), tt });
+				}
+			});
+		}
+
+		void notify_save(const model::Simulation& sim) override
+		{
+			if (data_out_.empty()) { return; }
+
+			std::cout << "Saving transition matrix.." << std::endl;
+			analysis::export_data(data_out_, outfile_stream_);
+		}
+	};
+
+
+	template <typename Tag>
 	std::vector<std::unique_ptr<Observer>> CreateObserverChain(json& J)
 	{
 		auto& ja = J["Simulation"]["Analysis"];
@@ -326,6 +370,7 @@ namespace analysis
 			else if (type == "NeighbData") res.emplace_back(std::make_unique<AllNeighborsObserver<Tag>>(unique_path, j, N));
 			else if (type == "SnapShot") res.emplace_back(std::make_unique<SnapShotObserver<Tag>>(unique_path, j));
 			else if (type == "CoordForces") res.emplace_back(std::make_unique<ForcesObserver<Tag>>(unique_path, j));
+			else if (type == "PigeonTransMatrix") res.emplace_back(std::make_unique<TransMatrixObs<Tag>>(unique_path, j, jpigeon.size()));
 			else throw std::runtime_error("unknown observer");
 		}
 		res.emplace_back(std::make_unique<DataExpObserver>(J)); // has to be at the end of the chain

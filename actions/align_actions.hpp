@@ -51,7 +51,7 @@ namespace model {
 
         const vec_t Fdir = math::save_normalize(adir, vec_t(0.f)) * w_; 
         self->f_ali_ang = math::rad_between(self->dir, Fdir);
- 		self->steering += Fdir;
+ 		    self->steering += Fdir;
       }
 
     public:

@@ -3,8 +3,6 @@
 
 #include "model/action_base.hpp"
 #include "agents/agents.hpp"
-//#include "agents/agents.hpp"
-//#include "agents/pigeon.hpp"
 
 namespace model {
 	namespace actions {

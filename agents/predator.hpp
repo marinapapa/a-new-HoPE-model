@@ -75,22 +75,22 @@ namespace model {
     static constexpr const char* name() { return "Pred"; }
 
     using AP = states::package<
-      states::persistent<actions::package<Pred,
-        actions::wiggle<Pred>,
-        actions::avoid_closest_prey<Pred>,
-        actions::hold_current<Pred>
-        >>,
-      states::persistent<actions::package<Pred,
-        actions::select_flock<Pred>,
-        actions::shadowing<Pred>
-      >>,
-      states::persistent<actions::package<Pred,
-        actions::wiggle<Pred>,
-        actions::chase_closest_prey<Pred>
-      >>,
       states::transient<actions::package<Pred,
-        actions::set_retreat<Pred>
-        >>
+      actions::set_retreat<Pred>
+      >>,
+      states::persistent<actions::package<Pred,
+      actions::select_flock<Pred>,
+      actions::shadowing<Pred>
+      >>,
+      states::persistent < actions::package < Pred,
+      actions::wiggle<Pred>,
+      actions::chase_closest_prey<Pred>
+      >>,
+      states::persistent<actions::package<Pred,
+      actions::wiggle<Pred>,
+      actions::avoid_closest_prey<Pred>,
+      actions::hold_current<Pred>
+      >>
       >;
     using transitions = transitions::piecewise_linear_interpolator<AP::transition_matrix, 1>;
 

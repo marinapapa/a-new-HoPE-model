@@ -30,15 +30,15 @@
           "output_name": "flocks"
         },
         {
-          "type": "CoordForces",
+          "type": "PigeonTransMatrix",
           "sample_freq": 0.2,
-          "output_name": "forces"
+          "output_name": "trans_matrix"
         }
       ],
       "Externals": {
         "configName": ""
       }
-    }  
+    }
   },
   "Trails": {
     "interval": 0.01,

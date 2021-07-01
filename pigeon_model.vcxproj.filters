@@ -181,6 +181,12 @@
     <ClInclude Include="model\json.hpp">
       <Filter>model</Filter>
     </ClInclude>
+    <ClInclude Include="model\stress_base.hpp">
+      <Filter>model</Filter>
+    </ClInclude>
+    <ClInclude Include="stress\sources.hpp">
+      <Filter>stress</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="model">
@@ -209,6 +215,9 @@
     </Filter>
     <Filter Include="glad\glsl">
       <UniqueIdentifier>{107e3409-bf94-49e7-b8bc-ec61cfafe8f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="stress">
+      <UniqueIdentifier>{2eebc922-1777-4cce-8679-a2704a7249c5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

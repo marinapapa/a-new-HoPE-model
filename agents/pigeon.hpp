@@ -7,6 +7,7 @@
 #include <glmutils/random.hpp>
 #include <glm/glm.hpp>
 #include "states/transient.hpp"
+#include "states/persistent.hpp"
 #include "actions/align_actions.hpp"
 #include "actions/cohere_actions.hpp"
 #include "actions/cohere_speed_actions.hpp"
@@ -15,6 +16,9 @@
 #include "actions/avoid_pred_actions.hpp"
 #include "actions/no_interacting_actions.hpp"
 #include "model/flight_control.hpp"
+#include "model/stress_base.hpp"
+#include "model/transitions.hpp"
+#include "stress/sources.hpp"
 #include "model/flight.hpp"
 #include "model/json.hpp"
 
@@ -45,6 +49,7 @@ namespace model {
       vec_t dir = vec_t(0);
       float speed = 0.f;
       vec_t accel = vec_t(0);
+      float stress = 0.f;
   };
 
   class Pigeon
@@ -56,14 +61,24 @@ namespace model {
 
     using AP = states::package<
       states::transient<actions::package<Pigeon, // normal flocking
-        actions::align_n<Pigeon>,
-		    actions::cohere_turn_n_all<Pigeon>,
-        actions::cohere_accel_n_front<Pigeon>,
-        actions::avoid_n_position<Pigeon>,
-        actions::wiggle<Pigeon>,
-        actions::avoid_p_direction<Pigeon>
-        >>
+      actions::align_n<Pigeon>,
+      actions::cohere_turn_n_all<Pigeon>,
+      actions::cohere_accel_n_front<Pigeon>,
+      actions::avoid_n_position<Pigeon>,
+      actions::wiggle<Pigeon>,
+      actions::avoid_p_direction<Pigeon>
+      >>,
+      states::persistent<actions::package<Pigeon, // escape penalty
+      actions::wiggle<Pigeon>
+      >>,
+      states::persistent<actions::package<Pigeon, // escaoe twi
+      actions::random_t_turn_gamma_pred<Pigeon>
+      >>
+      >;
+    using stress_accum = stress::accumulator<Pigeon,
+      stress::predator_distance<Pigeon>
     >;
+    using transitions = transitions::piecewise_linear_interpolator<AP::transition_matrix, 3>; // based on transition cuts of interpolation
 
   public:
     Pigeon(Pigeon&&) = default;
@@ -81,7 +96,8 @@ namespace model {
     void snapshot(Simulation* sim, size_t idx, const snapshot_entry<Tag>& se) noexcept;
     static float distance2(const pos_t& a, const pos_t& b) { return torus::distance2(Simulation::WH(), a, b); }
     static float bearing_angl(const vec_t& d, const pos_t& a, const pos_t& b) { return math::rad_between(d, torus::ofs(Simulation::WH(), a, b)); }
-   
+    static std::vector<snapshot_entry<Tag>> init_pop(const Simulation& sim, const json& J);
+
     const int& get_current_state() const noexcept { return current_state_; }
 
   public:
@@ -91,6 +107,7 @@ namespace model {
     float speed;  // [m/tick]
     float ang_vel = 0; // [ 1/s ] Only for extracting data, not used in model
     vec_t accel;  // [m/tick ^ 2]
+    float stress;
     tick_t reaction_time = 0;   // [ticks]
     tick_t last_update = 0; 
     bool am_target = false; // if individual is a the target of the predator
@@ -103,11 +120,14 @@ namespace model {
 
     flight::aero_info<float> ai;
     flight::state_aero<float> sa;
-    static std::vector<snapshot_entry<Tag>> init_pop(const Simulation& sim, const json& J);
 
   private:
     int current_state_ = 0;
+    static transitions transitions_;
     AP::package_array pa_;
+    float stress_ofs_; // stress offset (individual variation)
+    typename stress_accum::package_tuple sp_;
+
   };
 
 }

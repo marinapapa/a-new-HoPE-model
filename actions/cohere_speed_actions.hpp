@@ -67,8 +67,8 @@ namespace model {
       float cfov = 0;       // [1]
       float ffov = 0;       // [deg] front field of view
       float maxdist2 = 0;   // [m^2]
-	  float minacceldist2 = 0; // [m^2]
-	  float maxacceldist2 = 0; // [m^2]
+	    float minacceldist2 = 0; // [m^2]
+	    float maxacceldist2 = 0; // [m^2]
     private:
       float w_ = 0;         // [1] 
       float decel_w_ = 0;

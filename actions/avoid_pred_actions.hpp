@@ -5,6 +5,7 @@
 #include <glmutils/ray.hpp>
 #include <glmutils/random.hpp>
 #include "model/while_topo.hpp"
+// #include "agents/predator.hpp"
 
 namespace model {
   namespace actions {

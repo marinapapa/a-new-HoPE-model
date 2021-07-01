@@ -237,6 +237,7 @@
     <ClInclude Include="model\model.hpp" />
     <ClInclude Include="model\simulation.hpp" />
     <ClInclude Include="model\state_base.hpp" />
+    <ClInclude Include="model\stress_base.hpp" />
     <ClInclude Include="model\transitions.hpp" />
     <ClInclude Include="model\while_topo.hpp" />
     <ClInclude Include="simgl\AppWin.h" />
@@ -245,6 +246,7 @@
     <ClInclude Include="simgl\shader.h" />
     <ClInclude Include="states\persistent.hpp" />
     <ClInclude Include="states\transient.hpp" />
+    <ClInclude Include="stress\sources.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="pigeon_model.manifest" />
