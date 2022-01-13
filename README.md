@@ -1,7 +1,7 @@
 # *The (new) HoPE (Homing Pigeons Escape) model*
 
 An extension (forked repo) of the original [HoPE model](https://github.com/marinapapa/HoPE-model): a two-dimensional agent-based model of flocking under predation, adjusted to the collective motion and collective escape of pigeons. First presented in the manuscript:
-_Papadopoulou, M., Hildenbrandt H., Sankey, D.W.E., Portugal S.J.,and Hemelrijk, C.K. "Self-organization of collective escape in pigeon flocks". Submitted._ Available on _bioRxiv_: https://www.biorxiv.org/content/10.1101/2021.07.04.450902v1
+_Papadopoulou M, Hildenbrandt H, Sankey DWE, Portugal SJ, Hemelrijk CK (2022) Selforganization of collective escape in pigeon flocks. PLoS Comput Biol 18(1): e1009772. https://doi.org/10.1371/journal.pcbi.1009772_
 
 and extended here for:
 _Papadopoulou, M., Hildenbrandt H., Sankey, D.W.E., Portugal S.J.,and Hemelrijk, C.K. "Emergence of splits and collective turns in pigeon flocks under predation". Submitted._
