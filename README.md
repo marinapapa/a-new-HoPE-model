@@ -4,7 +4,7 @@ An extension (forked repo) of the original [HoPE model](https://github.com/marin
 _Papadopoulou M, Hildenbrandt H, Sankey DWE, Portugal SJ, Hemelrijk CK (2022) Selforganization of collective escape in pigeon flocks. PLoS Comput Biol 18(1): e1009772. https://doi.org/10.1371/journal.pcbi.1009772_
 
 and extended here for:
-_Papadopoulou, M., Hildenbrandt H., Sankey, D.W.E., Portugal S.J.,and Hemelrijk, C.K. "Emergence of splits and collective turns in pigeon flocks under predation". Submitted._
+_Papadopoulou, M., Hildenbrandt H., Sankey, D.W.E., Portugal S.J.,and Hemelrijk, C.K. 2022 "Emergence of splits and collective turns in pigeon flocks under predation"._
 
 The new model includes a stochastically predefined and discrete escape maneuver of prey individuals as a respond to the predator-agent. 
 
